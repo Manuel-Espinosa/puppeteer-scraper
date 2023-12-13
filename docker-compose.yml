@@ -1,0 +1,42 @@
+version: '3'
+
+services:
+  nginx-reverse-proxy:
+    image: nginx:latest
+    ports:
+      - "${APP_PORT}:${APP_PORT}"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - web-scraper
+    networks:
+      - backend
+  
+  web-scraper:
+    build: .
+    deploy:
+      replicas: 5
+      endpoint_mode: dnsrr
+    environment:
+      - NODE_ENV=${NODE_ENV}
+    volumes:
+      - .:/app
+    depends_on:
+      - chromium-node
+    networks:
+      - backend
+
+  chromium-node:
+    image: browserless/chrome:latest
+    environment:
+      - MAX_CONCURRENT_SESSIONS=${MAX_CONCURRENT_SESSIONS}
+    deploy:
+      replicas: 5
+      endpoint_mode: dnsrr
+    networks:
+      - backend
+
+networks:
+  backend:
+    external:
+      name: puppeteerapp
