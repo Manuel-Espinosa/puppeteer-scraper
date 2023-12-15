@@ -43,11 +43,10 @@ export const getMeliPricesFromTracker = async (id) => {
 
 export const fetchProductDetails = async (ids) => {
   const formattedProducts = [];
-  const localTracker = "http://meli-price-tracker:3000/api/product";
 
   for (const id of ids) {
     try {
-      const response = await axios.get(`${localTracker}/${id}/identifier`, {
+      const response = await axios.get(`${trackerUrl}/${id}/identifier`, {
         headers: { "User-Agent": "Insomnia/2023.5.7" },
       });
 
@@ -71,14 +70,13 @@ export const fetchProductDetails = async (ids) => {
 };
 
 export const fetchMeliProductSpecs = async (id) => {
-  const localTracker = `http://meli-price-tracker:3000/api/product/${id}/specs`;
   try {
-    const response = await axios.get(localTracker);
+    const response = await axios.get(`${trackerUrl}/${id}/specs`);
 
     const detail = response.data;
     const product = {
       productId: id,
-      specs: detail,
+      data: detail,
     };
     return product;
   } catch (error) {
