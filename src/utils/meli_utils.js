@@ -41,25 +41,25 @@ export const getMeliPricesFromTracker = async (id) => {
   }
 };
 
-
 export const fetchProductDetails = async (ids) => {
   const formattedProducts = [];
-  const localTracker = 'http://meli-price-tracker:3000/api/product'
+  const localTracker = "http://meli-price-tracker:3000/api/product";
 
   for (const id of ids) {
     try {
       const response = await axios.get(`${localTracker}/${id}/identifier`, {
-        headers: { 'User-Agent': 'Insomnia/2023.5.7' }
+        headers: { "User-Agent": "Insomnia/2023.5.7" },
       });
 
       const product = response.data;
       if (product && product.pictures && product.pictures.length > 0) {
         formattedProducts.push({
+          id: product.id,
           image: product.pictures[0].url,
           link: product.permalink,
           price: product.price,
           product: product.title,
-          source: 'meli'
+          source: "meli",
         });
       }
     } catch (error) {
@@ -70,4 +70,18 @@ export const fetchProductDetails = async (ids) => {
   return formattedProducts;
 };
 
+export const fetchMeliProductSpecs = async (id) => {
+  const localTracker = `http://meli-price-tracker:3000/api/product/${id}/specs`;
+  try {
+    const response = await axios.get(localTracker);
 
+    const detail = response.data;
+    const product = {
+      productId: id,
+      specs: detail,
+    };
+    return product;
+  } catch (error) {
+    console.error(`Error fetching specs for ID ${id}: ${error.message}`);
+  }
+};
