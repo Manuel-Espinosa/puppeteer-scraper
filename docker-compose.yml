@@ -15,7 +15,7 @@ services:
   web-scraper:
     build: .
     deploy:
-      replicas: 1
+      replicas: 3
       endpoint_mode: dnsrr
     environment:
       - NODE_ENV=${NODE_ENV}
@@ -31,7 +31,7 @@ services:
     environment:
       - MAX_CONCURRENT_SESSIONS=${MAX_CONCURRENT_SESSIONS}
     deploy:
-      replicas: 1
+      replicas: 3
       endpoint_mode: dnsrr
     networks:
       - backend
